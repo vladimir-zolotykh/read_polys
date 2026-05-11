@@ -48,6 +48,3 @@ def test_lazyproperty(capsys):
 
 if __name__ == "__main__":
     pytest.main(sys.argv)
-    # c = Circle(3.4)
-    # print(c.area)
-    # print(c.circumference)
