@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
 from typing import Callable
+import sys
 import math
+import pytest
 
 
 class LazyProperty:
@@ -34,7 +36,18 @@ class Circle:
         return 2 * math.pi * self.radius
 
 
-if __name__ == "__main__":
+def test_lazyproperty(capsys):
     c = Circle(3.4)
-    print(c.area)
-    print(c.circumference)
+    assert c.area == 36.316811075498
+    captured = capsys.readouterr()
+    assert "Calculating area...\n" in captured
+    assert c.circumference == 21.362830044410593
+    captured = capsys.readouterr()
+    assert "Calculating circumference...\n" in captured
+
+
+if __name__ == "__main__":
+    pytest.main(sys.argv)
+    # c = Circle(3.4)
+    # print(c.area)
+    # print(c.circumference)
