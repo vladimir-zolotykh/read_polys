@@ -2,7 +2,8 @@ import struct
 import itertools
 from pprint import pprint
 
-PolyT = list[tuple[float, float]]
+Point = tuple[float, float]
+PolyT = list[Point]
 PolysT = list[PolyT]
 polys: PolysT = [
     [(1.0, 2.5), (3.5, 4.0), (2.5, 1.5)],
@@ -41,7 +42,7 @@ def read_polys(filename) -> PolysT:
             (pbytes,) = struct.unpack("<i", f.read(4))
             poly: PolyT = []
             for m in range(pbytes // 16):
-                pt = struct.unpack("<dd", f.read(16))
+                pt: Point = struct.unpack("<dd", f.read(16))
                 poly.append(pt)
             polys.append(poly)
         return polys
