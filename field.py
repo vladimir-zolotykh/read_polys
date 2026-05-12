@@ -50,12 +50,11 @@ class PolyHeader(View):
     ]
 
 
+def as_tuple(view: View):
+    return ", ".join(f"{fld[0]}={str(getattr(view, fld[0]))}" for fld in view._fields)
+
+
 if __name__ == "__main__":
     with open("polys.bin", "rb") as f:
         ph = PolyHeader(f.read(PolyHeader._view_size))
-        print(ph.code)
-        print(ph.min_x)
-        print(ph.min_y)
-        print(ph.max_x)
-        print(ph.max_y)
-        print(ph.numpoly)
+        print(as_tuple(ph))
