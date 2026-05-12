@@ -26,6 +26,24 @@ def write_polys(filename, polys):
                 f.write(struct.pack("<dd", *pt))
 
 
+def read_polys(filename):
+    with open(filename, "rb") as f:
+        # Read the header
+        header = f.read(40)
+        file_code, min_x, min_y, max_x, max_y, num_polys = struct.unpack(
+            "<iddddi", header
+        )
+        polys = []
+        for n in range(num_polys):
+            (pbytes,) = struct.unpack("<i", f.read(4))
+            poly = []
+            for m in range(pbytes // 16):
+                pt = struct.unpack("<dd", f.read(16))
+                poly.append(pt)
+                polys.append(poly)
+                return polys
+
+
 if __name__ == "__main__":
     # Call it with our polygon data
     write_polys("polys.bin", polys)
