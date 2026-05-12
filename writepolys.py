@@ -2,14 +2,16 @@ import struct
 import itertools
 from pprint import pprint
 
-polys = [
+PolyT = list[tuple[float, float]]
+PolysT = list[PolyT]
+polys: PolysT = [
     [(1.0, 2.5), (3.5, 4.0), (2.5, 1.5)],
     [(7.0, 1.2), (5.1, 3.0), (0.5, 7.5), (0.8, 9.0)],
     [(3.4, 6.3), (1.2, 0.5), (4.6, 9.2)],
 ]
 
 
-def write_polys(filename, polys):
+def write_polys(filename, polys: PolysT):
     # Determine bounding box
     flattened = list(itertools.chain(*polys))
     min_x = min(x for x, y in flattened)
@@ -27,17 +29,17 @@ def write_polys(filename, polys):
                 f.write(struct.pack("<dd", *pt))
 
 
-def read_polys(filename):
+def read_polys(filename) -> PolysT:
     with open(filename, "rb") as f:
         # Read the header
         header = f.read(40)
         file_code, min_x, min_y, max_x, max_y, num_polys = struct.unpack(
             "<iddddi", header
         )
-        polys = []
+        polys: PolysT = []
         for n in range(num_polys):
             (pbytes,) = struct.unpack("<i", f.read(4))
-            poly = []
+            poly: PolyT = []
             for m in range(pbytes // 16):
                 pt = struct.unpack("<dd", f.read(16))
                 poly.append(pt)
