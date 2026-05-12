@@ -18,7 +18,8 @@ class Field:
     def __get__(self, instance, owner=None):
         if instance is None:
             return self
-        return struct.unpack_from(self.format, instance._view, self.offset)
+        tup = struct.unpack_from(self.format, instance._view, self.offset)
+        return tup[0] if len(tup) == 1 else tup
 
 
 class FieldMeta(type):
@@ -41,10 +42,10 @@ class View(metaclass=FieldMeta):
 class PolyHeader(View):
     _fields = [
         ("code", "<i"),
-        ("min_x", "<dd"),
-        ("min_y", "<dd"),
-        ("max_x", "<dd"),
-        ("max_y", "<dd"),
+        ("min_x", "<d"),
+        ("min_y", "<d"),
+        ("max_x", "<d"),
+        ("max_y", "<d"),
         ("numpoly", "<i"),
     ]
 
@@ -53,3 +54,8 @@ if __name__ == "__main__":
     with open("polys.bin", "rb") as f:
         ph = PolyHeader(f.read(PolyHeader._view_size))
         print(ph.code)
+        print(ph.min_x)
+        print(ph.min_y)
+        print(ph.max_x)
+        print(ph.max_y)
+        print(ph.numpoly)
