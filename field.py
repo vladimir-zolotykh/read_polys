@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from typing import ClassVar
 import struct
 
 
@@ -35,6 +36,9 @@ class FieldMeta(type):
 
 
 class View(metaclass=FieldMeta):
+    _view_size: ClassVar[int]
+    _fields: ClassVar[list[tuple[str, str]]]
+
     def __init__(self, bytes_data):
         self._view = memoryview(bytes_data)
 
