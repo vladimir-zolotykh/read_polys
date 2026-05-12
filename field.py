@@ -50,7 +50,7 @@ class PolyHeader(View):
     ]
 
 
-def as_tuple(view: View):
+def as_tuple(view: View) -> str:
     return ", ".join(f"{fld[0]}={str(getattr(view, fld[0]))}" for fld in view._fields)
 
 
