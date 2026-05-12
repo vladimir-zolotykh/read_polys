@@ -1,5 +1,6 @@
 import struct
 import itertools
+from pprint import pprint
 
 polys = [
     [(1.0, 2.5), (3.5, 4.0), (2.5, 1.5)],
@@ -40,10 +41,14 @@ def read_polys(filename):
             for m in range(pbytes // 16):
                 pt = struct.unpack("<dd", f.read(16))
                 poly.append(pt)
-                polys.append(poly)
-                return polys
+            polys.append(poly)
+        return polys
 
 
 if __name__ == "__main__":
     # Call it with our polygon data
     write_polys("polys.bin", polys)
+    polys2 = read_polys("polys.bin")
+    pprint(polys)
+    pprint(polys2)
+    assert polys2 == polys
