@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from __future__ import annotations
 from typing import ClassVar
 import struct
 
@@ -8,7 +9,7 @@ import struct
 class Field:
     """Descriptor"""
 
-    def __init__(self, name: str, fmt_or_view: str, offset: int):
+    def __init__(self, name: str, fmt_or_view: str | FieldMeta, offset: int):
         self._name = name
         self.fmt_or_view = fmt_or_view
         self.offset = offset
@@ -32,6 +33,8 @@ class Field:
 
 
 class FieldMeta(type):
+    _view_size: ClassVar[int]
+
     def __new__(mcls, clsname, bases, clsdict):
         fields = clsdict["_fields"] if "_fields" in clsdict else {}
         offset: int = 0
@@ -53,8 +56,8 @@ class FieldMeta(type):
 
 
 class View(metaclass=FieldMeta):
-    _view_size: ClassVar[int]
-    _fields: ClassVar[list[tuple[str, str]]]
+    # _view_size: ClassVar[int]
+    _fields: ClassVar[list[tuple[str, str | FieldMeta]]]
 
     def __init__(self, bytes_data):
         self._view = memoryview(bytes_data)
