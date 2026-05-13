@@ -10,7 +10,6 @@ class SizedRecord:
     def __init__(self, fd: BinaryIO, numpoly: int):
         self.fd = fd
         self.numpoly = numpoly
-        self.view: memoryview = fd.read()
 
     def iter_as(self, fmt: str | FM.FieldMeta):
         for n in range(self.numpoly):
@@ -30,4 +29,9 @@ if __name__ == "__main__":
         # print(ph.min.x)
         sr = SizedRecord(f, ph.numpoly)
         for pp in sr.iter_as("<dd"):
+            print(pp)
+    with open("polys.bin", "rb") as f:
+        ph = FM.PolyHeader(f.read(FM.PolyHeader._view_size))
+        sr = SizedRecord(f, ph.numpoly)
+        for pp in sr.iter_as(FM.Point):
             print(pp)
