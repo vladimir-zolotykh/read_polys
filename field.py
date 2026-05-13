@@ -41,12 +41,11 @@ class FieldMeta(type):
         d = dict(clsdict)
         for field_name, fmt_or_type in fields:
             if isinstance(fmt_or_type, str):
-                fmt = fmt_or_type
+                fmt: str = fmt_or_type
                 d[field_name] = Field(field_name, fmt, offset)
                 offset += struct.calcsize(fmt)
-            # elif issubclass(fmt_or_type, View):
             elif isinstance(fmt_or_type, FieldMeta):
-                view_type = fmt_or_type
+                view_type: FieldMeta = fmt_or_type
                 d[field_name] = Field(field_name, view_type, offset)
                 offset += view_type._view_size
             else:
