@@ -66,6 +66,9 @@ class Point(View):
         ("y", "<d"),
     ]
 
+    def __repr__(self):
+        return f'({getattr(self, "x")}, {getattr(self, "y")})'
+
 
 class PolyHeader(View):
     _fields = [
@@ -83,5 +86,5 @@ def as_tuple(view: View) -> str:
 if __name__ == "__main__":
     with open("polys.bin", "rb") as f:
         ph = PolyHeader(f.read(PolyHeader._view_size))
-        # print(as_tuple(ph))
-        print(ph.min.x)
+        print(as_tuple(ph))
+        # print(ph.min.x)
