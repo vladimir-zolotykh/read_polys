@@ -73,6 +73,7 @@ class Point(View):
 
 
 class PolyHeader(View):
+    numpoly: int
     _fields = [
         ("code", "<i"),
         ("min", Point),

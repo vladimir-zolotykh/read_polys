@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
-from typing import BinaryIO
+from typing import BinaryIO, Iterator, Any
 import struct
 import field as FM
 
@@ -11,7 +11,7 @@ class SizedRecord:
         self.fd = fd
         self.numpoly = numpoly
 
-    def iter_as(self, fmt: str | FM.FieldMeta):
+    def iter_as(self, fmt: str | FM.FieldMeta) -> Iterator[Any]:
         for n in range(self.numpoly):
             (size,) = struct.unpack("<i", self.fd.read(4))
             if isinstance(fmt, str):
