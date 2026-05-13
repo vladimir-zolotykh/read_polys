@@ -28,9 +28,18 @@ class FieldMeta(type):
         fields = clsdict["_fields"] if "_fields" in clsdict else {}
         offset: int = 0
         d = dict(clsdict)
-        for field_name, fmt in fields:
-            d[field_name] = Field(field_name, fmt, offset)
-            offset += struct.calcsize(fmt)
+        for field_name, fmt_or_type in fields:
+            if isinstance(fmt_or_type, str):
+                fmt = fmt_or_type
+                d[field_name] = Field(field_name, fmt, offset)
+                offset += struct.calcsize(fmt)
+            # elif issubclass(fmt_or_type, View):
+            elif isinstance(fmt_or_type, FieldMeta):
+                view_type = fmt_or_type
+                d[field_name] = view_type
+                offset += view_type._view_size
+            else:
+                raise TypeError(f"{fmt_or_type}: must be str or View")
         d["_view_size"] = offset
         return super().__new__(mcls, clsname, bases, d)
 
@@ -43,13 +52,18 @@ class View(metaclass=FieldMeta):
         self._view = memoryview(bytes_data)
 
 
+class Point(View):
+    _fields = [
+        ("x", "<d"),
+        ("y", "<d"),
+    ]
+
+
 class PolyHeader(View):
     _fields = [
         ("code", "<i"),
-        ("min_x", "<d"),
-        ("min_y", "<d"),
-        ("max_x", "<d"),
-        ("max_y", "<d"),
+        ("min", Point),
+        ("max", Point),
         ("numpoly", "<i"),
     ]
 
