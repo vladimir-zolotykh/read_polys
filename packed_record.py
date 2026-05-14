@@ -3,7 +3,7 @@
 # PYTHON_ARGCOMPLETE_OK
 from typing import Iterator, Any, BinaryIO
 import struct
-import FieldMeta as FM
+import field as FM
 
 
 class PackedRecord:
@@ -16,7 +16,7 @@ class PackedRecord:
         sz_buf = fd.read(struct.calcsize("<i"))
         (size,) = struct.unpack("<i", sz_buf)
         if include_size:
-            size -= sz_buf
+            size -= struct.calcsize("<i")
         buf = fd.read(size)
         return cls(buf)
 
@@ -38,7 +38,7 @@ class PackedRecord:
 if __name__ == "__main__":
     with open("polys.bin", "rb") as fd:
         ph = FM.PolyHeader(fd.read(FM.PolyHeader._view_size))
-        for i in range(ph.numpolys):
-            rec = PackedRecord.from_file("<i")
+        for i in range(ph.numpoly):
+            rec = PackedRecord.from_file(fd, "<i")
             for pp in rec.iter_as("<dd"):
                 print(pp)
