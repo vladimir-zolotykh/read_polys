@@ -23,16 +23,18 @@ class PackedRecord:
     def iter_as(self, fmt) -> Iterator[Any]:
         if isinstance(fmt, str):
             sz = struct.calcsize(fmt)
+
+            def unpack(chunk):
+                return struct.unpack_from(fmt, chunk)
+
         elif isinstance(fmt, FM.FieldMeta):
             sz = fmt._view_size
+            unpack = fmt
         else:
-            raise ValueError(f"{fmt} must be str of FieldMeta")
+            raise ValueError(f"{fmt} must be str of FieldMeta, got {type(fmt)!r}")
         for off in range(0, len(self._view), sz):
             o2 = off + sz
-            if isinstance(fmt, str):
-                yield struct.unpack_from(fmt, self._view[off:o2])
-            else:
-                yield fmt(self._view[off:o2])
+            yield unpack(self._view[off:o2])
 
 
 if __name__ == "__main__":
