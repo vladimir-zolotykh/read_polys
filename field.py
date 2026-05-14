@@ -61,15 +61,16 @@ class View(metaclass=FieldMeta):
     def __init__(self, bytes_data):
         self._view = memoryview(bytes_data)
 
+    def __repr__(self):
+        args = ", ".join(f"{f}={getattr(self, f)}" for f, _ in self._fields)
+        return f"<{self.__class__.__name__} {args}>"
+
 
 class Point(View):
     _fields = [
         ("x", "<d"),
         ("y", "<d"),
     ]
-
-    def __repr__(self):
-        return f'({getattr(self, "x")}, {getattr(self, "y")})'
 
 
 class PolyHeader(View):

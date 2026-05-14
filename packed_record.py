@@ -42,5 +42,5 @@ if __name__ == "__main__":
         ph = FM.PolyHeader(fd.read(FM.PolyHeader._view_size))
         for i in range(ph.numpoly):
             rec = PackedRecord.from_file(fd, "<i")
-            for pp in rec.iter_as("<dd"):
-                print(pp)
+            for pp in rec.iter_as(FM.Point):
+                print(f"{pp = }")
